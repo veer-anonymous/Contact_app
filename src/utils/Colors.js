@@ -1,0 +1,15 @@
+export const color = {
+  button_color: 'pink',
+  text_color: 'pink',
+  form_page_color: 'green',
+  form_text_color: 'gee',
+  theme_color_dark: '#16213E',
+  theme_color_dark_light1: '#2c3e50',
+  theme_color_dark_light2: '#395B64',
+  theme_color_dark_light3: '#A5C9CA',
+  theme_color_light: '#F5EDDC',
+  text_warning_color: '#FF0D10',
+  text_white_color: '#fff',
+};
+// "email": "ankitsharma03.com",
+// "password": "Hello123@",
