@@ -33,13 +33,16 @@ const Login = () => {
       ),
   });
   const navigation = useNavigation();
+  // "email": "virendramajhi03@.com",
+  // "password": "Hello123@",
   const apiCall = async values => {
-    const user = {name: 'ankitsharma03@gmail.com', password: 'Hello123@'};
+    console.log('hi this is an erroro of this of ');
+    const user = {email: 'virendramajhi03@.com', password: 'Hello123@'};
     const response = await axios.post(
       'https://smsapi.sdcodefusion.com/api/users/login',
       user,
     );
-    console.log('this is a response', response);
+    console.log('this is a response', JSON.stringify(response));
 
     // const call = await authService.loginUser(user);
 
@@ -49,7 +52,7 @@ const Login = () => {
     <>
       <Formik
         initialValues={{
-          name: '',
+          email: '',
           password: '',
         }}
         validationSchema={SignupSchema}
@@ -77,8 +80,8 @@ const Login = () => {
                   style={styles.inputStyle}
                   placeholder="Full Name"
                   value={values.name}
-                  onChangeText={handleChange('name')}
-                  onBlur={() => setFieldTouched('name')}
+                  onChangeText={handleChange('email')}
+                  onBlur={() => setFieldTouched('email')}
                 />
               </View>
 

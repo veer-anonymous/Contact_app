@@ -85,6 +85,7 @@ const SignUp = () => {
                 <TextInput
                   style={styles.inputStyle}
                   placeholder="Full Name"
+                  placeholderTextColor={'green'}
                   value={values.name}
                   onChangeText={handleChange('name')}
                   onBlur={() => setFieldTouched('name')}
@@ -125,6 +126,7 @@ const SignUp = () => {
                 <TextInput
                   style={styles.inputStyle}
                   placeholder="Full Password"
+                  placeholderTextColor={'red'}
                   value={values.password}
                   onChangeText={handleChange('password')}
                   onBlur={() => setFieldTouched('password')}

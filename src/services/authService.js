@@ -16,10 +16,10 @@ const authService = {
     console.log('this is try error', user);
     try {
       const response = await api.post('/api/users/login', user);
-      console.log('response error', response);
       return response;
     } catch (error) {
       console.log(error);
+      return error;
     }
   },
 
