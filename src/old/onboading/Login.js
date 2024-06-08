@@ -15,16 +15,14 @@ import * as Yup from 'yup';
 import {useNavigation} from '@react-navigation/native';
 import {color} from '../utils/Colors';
 import authService from '../services/authService';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // create a component
 const Login = () => {
-  // Navigation for Navigate one place to another place
-  const navigation = useNavigation();
-
-  // Yup used For make Schema and Validation
   const SignupSchema = Yup.object().shape({
-    email: Yup.string().email().required('Please enter email'),
+    name: Yup.string()
+      .min(6, 'Too Short !')
+      .max(50, 'Too Long')
+      .required('Please enter your full name'),
     password: Yup.string()
       .min(8)
       .max(20)
@@ -34,60 +32,22 @@ const Login = () => {
         'Must contain minimum 8 characters, at least one uppercase letter, c',
       ),
   });
-
-  //Create a function  send data to server
+  const navigation = useNavigation();
+  // "email": "virendramajhi03@.com",
+  // "password": "Hello123@",
   const apiCall = async values => {
-    console.log('Form Values==>', values);
-    try {
-      // Data send to Sever through API
-      const response = await authService.loginUser(values);
-      console.log('zzzzzz', JSON.stringify(response));
-      // Data convert string to ojbect
-      const data = JSON.stringify(response.data);
-      // Create a AsyncStorage for save Data of user
-      const User_token = await AsyncStorage.setItem(
-        'token',
-        JSON.stringify(response.data.token),
-      );
-      navigation.navigate('dashboard');
-      // const getDatafrom = await AsyncStorage.getItem('User_data');
-      // console.log('Token data ', getDatafrom);
+    console.log('hi this is an erroro of this of ');
+    const user = {email: 'virendramajhi03@.com', password: 'Hello123@'};
+    const response = await axios.post(
+      'https://smsapi.sdcodefusion.com/api/users/login',
+      user,
+    );
+    console.log('this is a response', JSON.stringify(response));
 
-      // if (response && response.data) {
-      //   // Handle successful response
-      //   const User_token = await AsyncStorage.setItem(
-      //     'User_token',
-      //     response.data.JSON(),
-      //   );
-      //   const User_data = await AsyncStorage.setItem(
-      //     'User_data',
-      //     response.data,
-      //   );
-      //   navigation.navigate('dashboard');
-      //   console.log(
-      //     'Login Successful',
-      //     'You have logged in successfully!',
-      //     // response.data.token,
-      //     User_data.data,
-      //     'as dfsdfasdfsdf sfd token and ',
-      //     // User_token,
-      //   );
-      //   // You can also navigate to another screen or perform other actions here
-      // } else {
-      //   // Handle unsuccessful response\
-      //   Alert.alert('Sorry User Invalid Plz Check it');
-      //   console.log(
-      //     'Login failed. Please check your credentials.',
-      //     response.message,
-      //   );
-      // }
-    } catch (error) {
-      // Handle Error
-      Alert.alert('User Invalide plz check it');
-      console.log('error.', error);
-    }
+    // const call = await authService.loginUser(user);
+
+    // console.log('this is apicall funcitons', call);
   };
-
   return (
     <>
       <Formik
@@ -118,16 +78,15 @@ const Login = () => {
               <View style={styles.inputWraper}>
                 <TextInput
                   style={styles.inputStyle}
-                  placeholder="Email"
-                  value={values.email}
+                  placeholder="Full Name"
+                  value={values.name}
                   onChangeText={handleChange('email')}
                   onBlur={() => setFieldTouched('email')}
-                  autoCapitalize="none"
                 />
               </View>
 
-              {touched.email && errors.email && (
-                <Text style={styles.errorText}>{errors.email}</Text>
+              {touched.name && errors.name && (
+                <Text style={styles.errorText}>{errors.name}</Text>
               )}
 
               <View style={styles.inputWraper}>
@@ -137,7 +96,6 @@ const Login = () => {
                   value={values.password}
                   onChangeText={handleChange('password')}
                   onBlur={() => setFieldTouched('password')}
-                  autoCapitalize="none"
                 />
               </View>
               {touched.password && errors.password && (
@@ -148,6 +106,27 @@ const Login = () => {
                 onPress={() => {
                   if (handleSubmit) {
                     apiCall(values);
+                    // navigation.navigate('dashboard');
+                    //
+                    // fetch('https://api.example.com/data')
+                    //   .then(response => {
+                    //     if (!response.ok) {
+                    //       throw new Error('Network response was not ok');
+                    //     }
+                    //     return response.json();
+                    //   })
+                    //   .then(data => {
+                    //     console.log('Data received:', data);
+                    //   })
+                    //   .catch(error => {
+                    //     console.error(
+                    //       'There was a problem with the fetch operation:',
+                    //       error,
+                    //     );
+                    //   });
+
+                    // "email": "ankitsharma03.com",
+                    // "password": "Hello123@",
                   }
                 }}
                 style={[

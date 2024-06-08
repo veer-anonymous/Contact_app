@@ -6,11 +6,31 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import BottomTab from '../component/BottomTab';
 import {useNavigation} from '@react-navigation/native';
+import contactsService from '../services/contactsService';
+import axios from 'axios';
 
 const Contact = () => {
+  useEffect(() => {
+    callApi();
+  }, []);
+  const callApi = async () => {
+    try {
+      console.log('before the data');
+      const response = await contactsService.getAllContacts();
+      console.log('after the resonse');
+      // const response = await axios({
+      //   method: 'get',
+      //   url: 'https://contacts-api-five.vercel.app/api/contacts',
+      // });
+      console.log('response', response);
+      return response;
+    } catch (error) {
+      console.log('errr the is s', error);
+    }
+  };
   const data = {
     name: 'Virendra Majhi',
     mobile: '8989999988',

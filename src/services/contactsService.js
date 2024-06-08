@@ -4,11 +4,13 @@ import api from './api';
 const contactsService = {
   getAllContacts: async () => {
     try {
+      console.log('call before the respnse contaSevice wala hia');
       const response = await api.get('/api/contacts');
-      // console.log('Standard API Data ==>', response.data);
+      console.log('Standard API Data ==>', response.data);
       return response;
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log('thisis a error from contserver', error);
     }
   },
 
@@ -18,7 +20,8 @@ const contactsService = {
       // console.log('Standard API Data ==>', response.data);
       return response;
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log('thisis a error from contserver', error);
     }
   },
 
@@ -27,7 +30,8 @@ const contactsService = {
       const response = await api.post('/api/contacts', contact);
       return response;
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log('thisis a error from contserver', error);
     }
   },
 
@@ -36,7 +40,8 @@ const contactsService = {
       const response = await api.put(`/api/contacts/${contact._id}`, contact);
       return response;
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log('thisis a error from contserver', error);
     }
   },
 
@@ -44,7 +49,8 @@ const contactsService = {
     try {
       await api.delete(`/api/contacts/${contactId}`);
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log('thisis a error from contserver', error);
     }
   },
 };

@@ -4,10 +4,14 @@ import api from './api';
 const authService = {
   getUser: async () => {
     try {
-      const response = await api.get(`/api/users/me`);
+      console.log('before the respnse error');
+      const response = await api.get('/api/users/me');
+      console.log('respnser lien 8', response);
       return response;
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log('errror  line 12 ', error);
+      return error;
     }
   },
 
@@ -25,11 +29,15 @@ const authService = {
 
   registerUser: async user => {
     try {
-      const response = await api.put(`/api/users`, user);
+      // const response = await api.put('/api/users', user);
+      const response = await api.post('/api/users', user);
+      // https://contacts-api-five.vercel.app/api/users
       //console.log(response);
       return response;
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log(error);
+      return error;
     }
   },
 
@@ -38,7 +46,9 @@ const authService = {
       const response = await api.put(`/api/users/${user._id}`, user);
       return response;
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log(error);
+      return error;
     }
   },
 
@@ -47,7 +57,9 @@ const authService = {
       const response = await api.put(`/api/users`, data);
       return response;
     } catch (error) {
-      throw error;
+      // throw error;
+      console.log(error);
+      return error;
     }
   },
 };

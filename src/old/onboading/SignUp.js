@@ -1,5 +1,4 @@
 //import liraries
-import axios from 'axios';
 import React, {Component} from 'react';
 import {
   Alert,
@@ -15,16 +14,22 @@ import * as Yup from 'yup';
 import {useNavigation} from '@react-navigation/native';
 import {color} from '../utils/Colors';
 import authService from '../services/authService';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // create a component
-const Login = () => {
-  // Navigation for Navigate one place to another place
-  const navigation = useNavigation();
-
-  // Yup used For make Schema and Validation
+const SignUp = () => {
   const SignupSchema = Yup.object().shape({
-    email: Yup.string().email().required('Please enter email'),
+    name: Yup.string()
+      .min(6, 'Too Short !')
+      .max(50, 'Too Long')
+      .required('Please enter your full name'),
+    email: Yup.string()
+      .email('Invalid email')
+      .required('Please enter your full Email'),
+    mobile: Yup.string()
+      .max(10, 'Please enter the mobile number')
+      .min(10, 'Please enter the mobile number')
+      .matches(/^[0-9]+$/, 'Must Be olly digits')
+      .required('Please enter your mobile number'),
     password: Yup.string()
       .min(8)
       .max(20)
@@ -33,67 +38,28 @@ const Login = () => {
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
         'Must contain minimum 8 characters, at least one uppercase letter, c',
       ),
+    confirmPassword: Yup.string()
+      .min(8, 'Pease Enter the correct passowrd')
+      .oneOf([Yup.ref('password')], 'not matching  password ')
+      .required('please enter paserod '),
   });
-
-  //Create a function  send data to server
-  const apiCall = async values => {
-    console.log('Form Values==>', values);
-    try {
-      // Data send to Sever through API
-      const response = await authService.loginUser(values);
-      console.log('zzzzzz', JSON.stringify(response));
-      // Data convert string to ojbect
-      const data = JSON.stringify(response.data);
-      // Create a AsyncStorage for save Data of user
-      const User_token = await AsyncStorage.setItem(
-        'token',
-        JSON.stringify(response.data.token),
-      );
-      navigation.navigate('dashboard');
-      // const getDatafrom = await AsyncStorage.getItem('User_data');
-      // console.log('Token data ', getDatafrom);
-
-      // if (response && response.data) {
-      //   // Handle successful response
-      //   const User_token = await AsyncStorage.setItem(
-      //     'User_token',
-      //     response.data.JSON(),
-      //   );
-      //   const User_data = await AsyncStorage.setItem(
-      //     'User_data',
-      //     response.data,
-      //   );
-      //   navigation.navigate('dashboard');
-      //   console.log(
-      //     'Login Successful',
-      //     'You have logged in successfully!',
-      //     // response.data.token,
-      //     User_data.data,
-      //     'as dfsdfasdfsdf sfd token and ',
-      //     // User_token,
-      //   );
-      //   // You can also navigate to another screen or perform other actions here
-      // } else {
-      //   // Handle unsuccessful response\
-      //   Alert.alert('Sorry User Invalid Plz Check it');
-      //   console.log(
-      //     'Login failed. Please check your credentials.',
-      //     response.message,
-      //   );
-      // }
-    } catch (error) {
-      // Handle Error
-      Alert.alert('User Invalide plz check it');
-      console.log('error.', error);
-    }
+  const navigation = useNavigation();
+  const callapi = async values => {
+    const call = await authService.registerUser(values);
+    console.log(call);
   };
-
   return (
     <>
+      {/* <View style={{backgroundColor: color.theme_color_dark}}>
+       
+      </View> */}
       <Formik
         initialValues={{
-          email: '',
-          password: '',
+          name: ' ',
+          email: ' ',
+          mobile: ' ',
+          password: ' ',
+          confirmPassword: ' ',
         }}
         validationSchema={SignupSchema}
         onSubmit={values => {
@@ -114,18 +80,30 @@ const Login = () => {
               backgroundColor={color.theme_color_dark}
             />
             <View style={styles.formcontainer}>
-              <Text style={styles.title}>Login</Text>
+              <Text style={styles.title}>SignUp</Text>
               <View style={styles.inputWraper}>
                 <TextInput
                   style={styles.inputStyle}
-                  placeholder="Email"
+                  placeholder="Full Name"
+                  placeholderTextColor={'green'}
+                  value={values.name}
+                  onChangeText={handleChange('name')}
+                  onBlur={() => setFieldTouched('name')}
+                />
+
+                {touched.name && errors.name && (
+                  <Text style={styles.errorText}>{errors.name}</Text>
+                )}
+              </View>
+              <View style={styles.inputWraper}>
+                <TextInput
+                  style={styles.inputStyle}
+                  placeholder="Full Email"
                   value={values.email}
                   onChangeText={handleChange('email')}
                   onBlur={() => setFieldTouched('email')}
-                  autoCapitalize="none"
                 />
               </View>
-
               {touched.email && errors.email && (
                 <Text style={styles.errorText}>{errors.email}</Text>
               )}
@@ -133,21 +111,46 @@ const Login = () => {
               <View style={styles.inputWraper}>
                 <TextInput
                   style={styles.inputStyle}
+                  placeholder="Full Mobile"
+                  keyboardType="number-pad"
+                  value={values.mobile}
+                  onChangeText={handleChange('mobile')}
+                  onBlur={() => setFieldTouched('mobile')}
+                  maxLength={10}
+                />
+              </View>
+              {touched.mobile && errors.mobile && (
+                <Text style={styles.errorText}>{errors.mobile}</Text>
+              )}
+              <View style={styles.inputWraper}>
+                <TextInput
+                  style={styles.inputStyle}
                   placeholder="Full Password"
+                  placeholderTextColor={'red'}
                   value={values.password}
                   onChangeText={handleChange('password')}
                   onBlur={() => setFieldTouched('password')}
-                  autoCapitalize="none"
                 />
               </View>
               {touched.password && errors.password && (
                 <Text style={styles.errorText}>{errors.password}</Text>
               )}
-
+              <View style={styles.inputWraper}>
+                <TextInput
+                  style={styles.inputStyle}
+                  placeholder="Full ConfirmPassword"
+                  value={values.confirmPassword}
+                  onChangeText={handleChange('confirmPassword')}
+                  onBlur={() => setFieldTouched('confirmPassword')}
+                />
+              </View>
+              {touched.confirmPassword && errors.confirmPassword && (
+                <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+              )}
               <TouchableOpacity
                 onPress={() => {
                   if (handleSubmit) {
-                    apiCall(values);
+                    callapi(values);
                   }
                 }}
                 style={[
@@ -161,13 +164,14 @@ const Login = () => {
                 disabled={!isValid}>
                 <Text style={styles.submitBtnText}>Submit Button</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.ihave_acount}
                 onPress={() => {
-                  navigation.navigate('signup');
+                  navigation.navigate('login');
                 }}>
                 <Text style={styles.ihave_acount_text}>
-                  I don't have acount {'  '}?
+                  I have allready acount {'  '}?
                 </Text>
               </TouchableOpacity>
             </View>
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title: {
-    color: color.theme_color_dark_light1,
+    color: color.theme_color_dark,
     fontSize: 25,
     fontWeight: '700',
     marginBottom: 15,
@@ -239,4 +243,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Login;
+export default SignUp;
